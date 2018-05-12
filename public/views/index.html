@@ -1,0 +1,40 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <title>Acessar o Banco</title>
+</head>
+<body>
+  <script type="text/javascript">
+  function getAction()
+  {
+    document.bankAcess.action = "/" + document.bankAcess.bankType.value + "/login";
+    return true;
+  }
+  </script>
+  <form name="bankAcess" onsubmit="return getAction();" method="post">
+    <h1>Acessar o banco</h1>
+      <p>Os campos marcados com um <strong><abbr title="required">*</abbr></strong> são de preenchimento obrigatório.</p>
+      <p>
+        <label for="bankType">
+          <span>Banco:</span>
+        </label>
+        <select id="bankType" name="bankType">
+          <option value="banrisul">Banrisul</option>
+        </select>
+      </p>
+      <p>
+        <label for="branch">Agência: <abbr title="required">*</abbr></label>
+          <input id="branch" type="text" name="branch_number" value="">
+      </p>
+      <p>
+        <label for="account">Conta: <abbr title="required">*</abbr></label>
+          <input id="account" type="text" name="account_number" value="">
+      </p>
+      <p>
+        <label for="password">Senha: <abbr title="required">*</abbr></label>
+          <input id="password" type="password" name="password_number" value="">
+      </p>
+      <p> <button type="submit" onclick="document.bankType=bankType.value">Acessar</button> </p>
+  </form>
+</body>
+</html>
