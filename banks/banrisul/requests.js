@@ -22,53 +22,44 @@ function login(branch, account, password) {
 
     var initialPage = await DoRequest(initialPageOptions);
 
+    if(!initialPageOptions.isResultCorrect(initialPage.res)) {
+      reject();
+    }
+
     if(!lastUsedCookies) {
       lastUsedCookies = GetCookies(initialPage.res);
     }
 
-    // options = [
-    //   initialPageOptions,
-    //   formPageOptions,
-    //   brancoPageOptions,
-    //   getLoginPgeOptions,
-    //   postLoginPageOptions,
-    //   getLoginSenhaPageOptions,
-    //   postLoginSenhaPageOptions,
-    //   getUsuarioLogadoPageOptions,
-    //   getMenuPageOptions,
-    //   getSaldoOptions
-    // ];
+    options = [
+      formPageOptions,
+      brancoPageOptions,
+      getLoginPageOptions,
+      postLoginPageOptions,
+      getLoginSenhaPageOptions,
+      postLoginSenhaPageOptions
+    ];
 
-    formPageOptions.handleCookies(lastUsedCookies, GetCookies(initialPage.res));
-
-    var formPage = await DoRequest(formPageOptions);
-
-    brancoPageOptions.handleCookies(lastUsedCookies, GetCookies(formPage.res));
-
-    var brancoPage = await DoRequest(brancoPageOptions);
-
-    getLoginPageOptions.handleCookies(lastUsedCookies, GetCookies(brancoPage.res));
-
-    var getLoginPage = await DoRequest(getLoginPageOptions);
-
-    postLoginPageOptions.handleCookies(lastUsedCookies, GetCookies(getLoginPage.res));
     postLoginPageOptions.setDataField("agencia", branch);
     postLoginPageOptions.setDataField("conta", account);
-
-    var postLoginPage = await DoRequest(postLoginPageOptions);
-
-    //console.log(postLoginPage.res);
-
-    getLoginSenhaPageOptions.handleCookies(lastUsedCookies, GetCookies(postLoginPage.res));
-
-    var getLoginSenhaPage = await DoRequest(getLoginSenhaPageOptions);
-
-    postLoginSenhaPageOptions.handleCookies(lastUsedCookies, GetCookies(getLoginSenhaPage.res));
     postLoginSenhaPageOptions.setDataField("Senha", password);
 
-    var postLoginSenhaPage = await DoRequest(postLoginSenhaPageOptions);
+    options.reduce(async function(promise, currOptions, index) {
+      return promise
+      .then(async (prevOptionsResult) => {
+        currOptions.handleCookies(lastUsedCookies, GetCookies(prevOptionsResult.res));
+        try {
+          var result = await DoRequest(currOptions);
 
-    resolve();
+          if(index >= options.length - 1) {
+            resolve();
+          }
+          return result;
+
+         } catch (err) {
+           reject();
+         }
+      })
+    }, Promise.resolve(initialPage));
   })
 }
 
@@ -110,8 +101,12 @@ function DoRequest(options, doResult) {
       body = chunk;
     });
     res.on('end', () => {
-      console.log("Status code: " + res.statusCode);
-      resolve({res: res, body: body});
+      //console.log(options);
+      if(options.isResultCorrect(res)) {
+        resolve({res: res, body: body});
+      } else {
+        reject();
+      }
     });
   });
 

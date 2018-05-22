@@ -56,6 +56,18 @@ class BaseOptions {
     this.headers["Cookie"] = updatedCookies;
   }
 
+  isResultCorrect(requestResult) {
+    return this.checkerMethod(requestResult);
+  }
+
+  checkerMethod(requestResult) {
+    return true;
+  }
+
+  setCheckerMethod(newCheckerMethod) {
+    this.checkerMethod = newCheckerMethod;
+  }
+
 }
 
 module.exports = BaseOptions;

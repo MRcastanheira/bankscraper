@@ -10,8 +10,13 @@ var banrisul = {
 
 async function _login(branch, account, password, doResult) {
   console.log('Logging to', bankName);
-  await requests.login(branch, account, password);
-  doResult();
+
+  try {
+    await requests.login(branch, account, password);
+    doResult(true);
+  } catch (err) {
+    doResult(false);
+  }
 }
 
 async function _getBalance(doResult) {

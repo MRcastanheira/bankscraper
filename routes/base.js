@@ -12,8 +12,12 @@ routes.post('/login', function (req, res) {
 
 function login(req, res, branch, account, password, bankType) {
   var bank = banks.getBank(bankType);
-  bank.login(branch, account, password, () => {
-    res.render('bank');
+  bank.login(branch, account, password, hasSucceeded => {
+    if(hasSucceeded) {
+      res.render('bank');
+    } else {
+      res.render('index', { infoMessage: "Conta ou senha incorretos"});
+    }
   })
 }
 

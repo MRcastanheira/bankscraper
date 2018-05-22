@@ -23,5 +23,6 @@ html
         p
           label(for="password") Senha: <abbr title="required">*</abbr>
             input(id="password" type="password" name="password_number" value="")
+        p!= infoMessage
         p
           button(type="submit" onclick="document.bankType=bankType.value") Acessar

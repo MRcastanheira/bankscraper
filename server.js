@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
 
+// template engine
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname,'/views'));
 
@@ -15,11 +16,12 @@ app.use(express.static(__dirname + '/public'));
 
 const routes = require('./routes');
 
+// front
 app.get('/', function (req, res) {
   res.render('index');
 });
 
-//  Connect all our routes to our application
+//  api
 app.use('/', routes);
 
 var server = app.listen(process.env.PORT || 8080, function () {

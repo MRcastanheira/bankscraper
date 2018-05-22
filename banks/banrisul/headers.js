@@ -2,7 +2,8 @@ var BaseOptions = require('../../options.js');
 
 class BanrisulOptions extends BaseOptions {
   constructor() {
-    super('ww8.banrisul.com.br', 443)
+    super('ww8.banrisul.com.br', 443);
+    this.setCheckerMethod(checkerMethod_is200);
   }
 }
 
@@ -40,6 +41,14 @@ const POSTOptions = {
   'Content-Type': 'application/x-www-form-urlencoded'
 };
 
+function checkerMethod_is200(res) {
+  return res.statusCode == 200;
+}
+
+function checkerMethod_is302(res) {
+  return res.statusCode == 302;
+}
+
 var initialPageOptions = new BanrisulOptionsGet();
 initialPageOptions.setPath('/brb/link/brbwe4hw.aspx?Largura=1920&Altura=995&Sistema=Home');
 
@@ -62,6 +71,7 @@ postLoginPageOptions.setData({
   agenciaCV: '', contaCV: '', VeroPay: 'N', Sequencia: '', PAN: '', Info: '',
   JavaVersion: '?', Criptograma: '', Certificado: '', LoginCartao: 'N', LoginCartaoVirtual: 'N'
 });
+postLoginPageOptions.setCheckerMethod(checkerMethod_is302);
 
 var getLoginSenhaPageOptions = new BanrisulOptionsGet();
 getLoginSenhaPageOptions.setPath('/brb/link/Brbw4Dhw_Login_Senha.aspx');
@@ -74,6 +84,7 @@ postLoginSenhaPageOptions.setData({
   __EVENTVALIDATION: '/wEdAAIVK9fWcOCiH+WNRt+XRikkffys55W/gmrV2SyCTq7i980Zg83RwfPxXluYjYce0BCK7Znd',
   Sequencia: ''
 });
+postLoginSenhaPageOptions.setCheckerMethod(checkerMethod_is302);
 
 var getUsuarioLogadoPageOptions = new BanrisulOptionsGet();
 getUsuarioLogadoPageOptions.setPath('/brb/link/Brbw4Dhw_Usuario_Logado.aspx');
